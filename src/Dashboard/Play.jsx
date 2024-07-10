@@ -96,24 +96,27 @@ const Play = () => {
     localStorage.setItem("selectedTicketId", selectedTicketId);
   }, [selectedTicketId]);
 
-  useEffect(() => {
-    localStorage.setItem("ticketAmount", ticket.amount);
-  }, [ticket.amount]);
-
   const handleNumberClick = async (number) => {
     if (!selectedCategory) {
       toast.warning("Please select a category first.");
       return;
     }
+  
+    // Check if selected ticket exists
     const selectedTicket = tickets.find((ticket) => ticket._id === selectedTicketId);
-
     if (!selectedTicket) {
       toast.error("Selected ticket not found.");
       return;
     }
-
+  
+    // Check if wallet balance is sufficient
+    if (ticket.amount < selectedTicket.amount) {
+      toast.error("Insufficient balance. Please recharge your wallet.");
+      return;
+    }
+  
     const categoryNumbers = selectedNumbers[selectedTicketId] || [];
-
+  
     if (categoryNumbers.includes(number)) {
       // Deselect the number
       setSelectedNumbers((prevSelectedNumbers) => ({
@@ -130,6 +133,7 @@ const Play = () => {
       await fetchTicket(selectedTicket._id, number);
     }
   };
+  
 
   const fetchTicket = async (ticketId, number) => {
     const token = localStorage.getItem("token");
@@ -138,6 +142,21 @@ const Play = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
+  
+      // Check if selected ticket exists
+      const selectedTicket = tickets.find((ticket) => ticket._id === ticketId);
+      if (!selectedTicket) {
+        toast.error("Selected ticket not found.");
+        return;
+      }
+  
+      // Check if wallet balance is sufficient
+      if (ticket.amount < selectedTicket.amount) {
+        toast.error("Insufficient balance. Please recharge your wallet.");
+        return;
+      }
+  
+      // Proceed with API call
       const response = await axios.post(
         "http://localhost:8000/api/ticketNumber/create",
         {
@@ -146,15 +165,13 @@ const Play = () => {
         },
         { headers }
       );
-
+  
       console.log("Ticket selection response:", response.data);
       if (response.data.success) {
-        const updatedAmount = response.data.response.amount;
         setTicket((prevTicket) => ({
           ...prevTicket,
-          amount: updatedAmount,
+          amount: response.data.response.amount,
         }));
-
         setSelectedNumbers((prevSelectedNumbers) => ({
           ...prevSelectedNumbers,
           [ticketId]: [...(prevSelectedNumbers[ticketId] || []), number],
@@ -168,6 +185,7 @@ const Play = () => {
       toast.error("Error selecting ticket. Please try again later.");
     }
   };
+  
 
   const deleteTicket = async (ticketId, ticketNumber) => {
     const token = localStorage.getItem("token");
@@ -197,12 +215,10 @@ const Play = () => {
       console.log("Ticket deletion response:", response.data);
 
       if (response.data.success) {
-        const updatedAmount = response.data.response.amount;
         setTicket((prevTicket) => ({
           ...prevTicket,
-          amount: updatedAmount,
+          amount: response.data.response.amount,
         }));
-
         setSelectedNumbers((prevSelectedNumbers) => ({
           ...prevSelectedNumbers,
           [ticketId]: prevSelectedNumbers[ticketId].filter(
@@ -228,12 +244,18 @@ const Play = () => {
     setSelectedCategory(category);
   };
 
-  const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
+  const numbers = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,
+    79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
+    98, 99, 100,
+  ];
   const rows = [];
   for (let i = 0; i < numbers.length; i += 10) {
     rows.push(numbers.slice(i, i + 10));
   }
-
   return (
     <>
       <DashboardHeader />
@@ -303,9 +325,7 @@ const Play = () => {
                   <div key={category}>
                     <div className="side-category">{label}:</div>
                     {tickets
-                      .filter(
-                        (ticket) => ticket.amount === parseFloat(category)
-                      )
+                      .filter((ticket) => ticket.amount === parseFloat(category))
                       .map((ticket) =>
                         (selectedNumbers[ticket._id] || []).map((number) => (
                           <span key={number}>{number} </span>
