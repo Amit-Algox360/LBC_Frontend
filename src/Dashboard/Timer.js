@@ -73,7 +73,7 @@ const Timer = () => {
             <div className='d-grid gap-2 col-1 mx-auto'>
                 <h1>{timer}</h1>
             </div>
-            <div className='d-grid gap-2 col-2 mx-auto'>
+            {/* <div className='d-grid gap-2 col-2 mx-auto'>
                 <button 
                     onClick={() => navigate('/result')} 
                     disabled={!isTimerComplete}
@@ -84,7 +84,7 @@ const Timer = () => {
                 >
                     <b>Result</b>
                 </button>
-            </div>
+            </div> */}
         </>
     );
 }

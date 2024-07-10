@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function Header() {
     return (
@@ -7,7 +7,7 @@ function Header() {
    <div className='nav-main1 '>
                 <nav className="navbar navbar-expand-lg bg-body-tertiary">
                     <div className="container">
-                        <Link to="/"><img src="https://img.hotimg.com/logo-181c65d1a63a3cafe.png" alt="logo-181c65d1a63a3cafe.png" border="0" /></Link>
+                        <NavLink to="/"><img src="https://img.hotimg.com/logo-181c65d1a63a3cafe.png" alt="logo-181c65d1a63a3cafe.png" border="0" /></NavLink>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>

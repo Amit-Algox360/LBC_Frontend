@@ -18,13 +18,13 @@ import Timer from "./Dashboard/Timer";
 import Result from "./Dashboard/Result";
 function App() {
   return (
-    <BrowserRouter>
+ 
     <Routes>
     <Route path="/" element={<Home />}/>
       <Route path="/login" element={<Login />}/>
       <Route path="register" element={<Register />}/>
       <Route path="main" element={<Main />}/>
-      <Route path="play" element={<Play />}/>
+      <Route path="/play" element={<Play />}/>
       <Route path="activity" element={<Activity />}/>
       <Route path="update" element={<Upadate />}/>
       <Route path="cpass" element={<Cpassword />}/>
@@ -36,9 +36,9 @@ function App() {
       <Route path="car" element={<Car />}/>
       <Route path="createticket" element={<Createticket />}/>
       <Route path="timer" element={<Timer />}/>
-      <Route path="result" element={<Result />}/>
+      <Route path="/result" element={<Result />}/>
     </Routes>
-  </BrowserRouter>
+
   );
 }
 

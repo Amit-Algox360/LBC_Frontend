@@ -8,11 +8,19 @@ const Play = () => {
   const [ticket, setTicket] = useState({});
   const [tickets, setTickets] = useState([]);
   const [categories, setCategories] = useState({});
-  const [selectedNumbers, setSelectedNumbers] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedTicketId, setSelectedTicketId] = useState("");
+  const [selectedNumbers, setSelectedNumbers] = useState(() => {
+    const storedNumbers = localStorage.getItem("selectedNumbers");
+    return storedNumbers ? JSON.parse(storedNumbers) : {};
+  });
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const storedCategory = localStorage.getItem("selectedCategory");
+    return storedCategory || "";
+  });
+  const [selectedTicketId, setSelectedTicketId] = useState(() => {
+    const storedTicketId = localStorage.getItem("selectedTicketId");
+    return storedTicketId || "";
+  });
 
-  // Function to fetch data on login
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -28,14 +36,12 @@ const Play = () => {
         Authorization: `Bearer ${token}`,
       };
 
-      // Fetch user data
       const userResponse = await axios.get(
         `http://localhost:8000/api/user/read?userId=${userId}`,
         { headers }
       );
       setTicket(userResponse.data.response);
 
-      // Fetch active tickets
       const ticketResponse = await axios.get(
         "http://localhost:8000/api/ticket/read",
         { headers }
@@ -52,11 +58,23 @@ const Play = () => {
         return acc;
       }, {});
       setCategories(formattedCategories);
-      const storedSelectedNumbers = JSON.parse(localStorage.getItem("selectedNumbers"));
+
+      const storedSelectedNumbers = JSON.parse(
+        localStorage.getItem("selectedNumbers")
+      );
       if (storedSelectedNumbers) {
         setSelectedNumbers(storedSelectedNumbers);
       }
 
+      const storedCategory = localStorage.getItem("selectedCategory");
+      if (storedCategory) {
+        setSelectedCategory(storedCategory);
+      }
+
+      const storedTicketId = localStorage.getItem("selectedTicketId");
+      if (storedTicketId) {
+        setSelectedTicketId(storedTicketId);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -66,15 +84,28 @@ const Play = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("selectedNumbers", JSON.stringify(selectedNumbers));
+  }, [selectedNumbers]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedCategory", selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedTicketId", selectedTicketId);
+  }, [selectedTicketId]);
+
+  useEffect(() => {
+    localStorage.setItem("ticketAmount", ticket.amount);
+  }, [ticket.amount]);
 
   const handleNumberClick = async (number) => {
     if (!selectedCategory) {
       toast.warning("Please select a category first.");
       return;
     }
-    const selectedTicket = tickets.find(
-      (ticket) => ticket._id === selectedTicketId
-    );
+    const selectedTicket = tickets.find((ticket) => ticket._id === selectedTicketId);
 
     if (!selectedTicket) {
       toast.error("Selected ticket not found.");
@@ -84,14 +115,14 @@ const Play = () => {
     const categoryNumbers = selectedNumbers[selectedTicketId] || [];
 
     if (categoryNumbers.includes(number)) {
+      // Deselect the number
       setSelectedNumbers((prevSelectedNumbers) => ({
         ...prevSelectedNumbers,
-        [selectedTicketId]: categoryNumbers.filter(
-          (selectedNumber) => selectedNumber !== number
-        ),
+        [selectedTicketId]: categoryNumbers.filter((selectedNumber) => selectedNumber !== number),
       }));
       await deleteTicket(selectedTicket._id, number);
     } else {
+      // Select the number
       setSelectedNumbers((prevSelectedNumbers) => ({
         ...prevSelectedNumbers,
         [selectedTicketId]: [...categoryNumbers, number],
@@ -100,7 +131,6 @@ const Play = () => {
     }
   };
 
-  // Function to fetch ticket details
   const fetchTicket = async (ticketId, number) => {
     const token = localStorage.getItem("token");
     try {
@@ -119,10 +149,12 @@ const Play = () => {
 
       console.log("Ticket selection response:", response.data);
       if (response.data.success) {
+        const updatedAmount = response.data.response.amount;
         setTicket((prevTicket) => ({
           ...prevTicket,
-          amount: response.data.response.amount,
+          amount: updatedAmount,
         }));
+
         setSelectedNumbers((prevSelectedNumbers) => ({
           ...prevSelectedNumbers,
           [ticketId]: [...(prevSelectedNumbers[ticketId] || []), number],
@@ -137,7 +169,6 @@ const Play = () => {
     }
   };
 
-  // Function to delete ticket
   const deleteTicket = async (ticketId, ticketNumber) => {
     const token = localStorage.getItem("token");
 
@@ -166,10 +197,12 @@ const Play = () => {
       console.log("Ticket deletion response:", response.data);
 
       if (response.data.success) {
+        const updatedAmount = response.data.response.amount;
         setTicket((prevTicket) => ({
           ...prevTicket,
-          amount: response.data.response.amount,
+          amount: updatedAmount,
         }));
+
         setSelectedNumbers((prevSelectedNumbers) => ({
           ...prevSelectedNumbers,
           [ticketId]: prevSelectedNumbers[ticketId].filter(
@@ -186,7 +219,6 @@ const Play = () => {
     }
   };
 
-  // Function to handle category change
   const handleCategoryChange = (e) => {
     const category = e.target.value;
     const ticket = tickets.find((t) => t.amount === parseFloat(category));
@@ -196,17 +228,7 @@ const Play = () => {
     setSelectedCategory(category);
   };
 
-  // Generate number rows
-  const numbers = [1	,2	,3,	4	,5,	6,	7,	8,	9,	10,
-11	,12,	13,	14	,15	,16	,17,	18	,19	,20,
-21,	22,	23,	24,	25,	26	,27	,28,	29,	30,
-31,	32,	33,	34	,35,	36,	37,	38,	39,	40,
-41,	42,	43,	44,	45,	46,	47,	48,	49,	50,
-51,	52,	53,	54,	55,	56,	57,	58,	59	,60,
-61,	62,	63,	64,	65,	66	,67,	68,	69,	70,
-71,	72,	73,	74,	75,	76	,77,	78,	79,	80,
-81,	82,	83,	84,	85,	86,	87	,88	,89,	90,
-91,	92,	93,	94,	95,	96,	97,	98,	99,	100,];
+  const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
   const rows = [];
   for (let i = 0; i < numbers.length; i += 10) {
     rows.push(numbers.slice(i, i + 10));
@@ -277,22 +299,25 @@ const Play = () => {
                 <p>
                   <b>Selected Numbers</b>
                 </p>
-                {selectedNumbers[selectedTicketId] && (
-                  <div>
-                    <div className="side-category">
-                      {categories[selectedTicketId]}
-                    </div>
-                    {selectedNumbers[selectedTicketId].map((number) => (
-                      <span key={number}>{number} </span>
-                    ))}
+                {Object.entries(categories).map(([category, label]) => (
+                  <div key={category}>
+                    <div className="side-category">{label}:</div>
+                    {tickets
+                      .filter(
+                        (ticket) => ticket.amount === parseFloat(category)
+                      )
+                      .map((ticket) =>
+                        (selectedNumbers[ticket._id] || []).map((number) => (
+                          <span key={number}>{number} </span>
+                        ))
+                      )}
                   </div>
-                )}
+                ))}
               </div>
             </div>
           </div>
         </div>
       </div>
-     
     </>
   );
 };
