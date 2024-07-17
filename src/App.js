@@ -16,6 +16,7 @@ import Car from "./prac";
 import Createticket from "./Admin/createticket";
 import Timer from "./Dashboard/Timer";
 import Result from "./Dashboard/Result";
+import Game from "./Dashboard/game";
 function App() {
   return (
  
@@ -37,6 +38,8 @@ function App() {
       <Route path="createticket" element={<Createticket />}/>
       <Route path="timer" element={<Timer />}/>
       <Route path="/result" element={<Result />}/>
+      <Route path="/game" element={<Game />}/>
+
     </Routes>
 
   );

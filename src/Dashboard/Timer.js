@@ -2,21 +2,29 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Timer = () => {
-    const [timer, setTimer] = useState("00:00:10");
+    const [timer, setTimer] = useState("01:00:00");
     const [isTimerComplete, setIsTimerComplete] = useState(false);
     const Ref = useRef(null);
     const navigate = useNavigate();
 
-    function getTimeRemaining(e) {
+    // const formatHour = (hour) => {
+    //     const period = hour >= 12 ? 'PM' : 'AM';
+    //     const formattedHour = hour % 12 || 12; 
+    //     return `${formattedHour}${period}`;
+    // };
+
+    // const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
+
+    const getTimeRemaining = (e) => {
         const total = Date.parse(e) - Date.parse(new Date());
         const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((total / 1000 / 60) % 60);
         const seconds = Math.floor((total / 1000) % 60);
 
         return { total, hours, minutes, seconds };
-    }
+    };
 
-    function startTimer(e) {
+    const startTimer = (e) => {
         let { total, hours, minutes, seconds } = getTimeRemaining(e);
         if (total >= 0) {
             setTimer(
@@ -28,21 +36,21 @@ const Timer = () => {
             setIsTimerComplete(true);
             clearInterval(Ref.current);
         }
-    }
+    };
 
-    function clearTimer(e) {
+    const clearTimer = (e) => {
         if (Ref.current) clearInterval(Ref.current);
         const id = setInterval(() => {
             startTimer(e);
         }, 1000);
         Ref.current = id;
-    }
+    };
 
-    function getDeadTime() {
+    const getDeadTime = () => {
         let deadline = new Date();
-        deadline.setSeconds(deadline.getSeconds() + 10);
+        deadline.setHours(deadline.getHours() + 1);
         return deadline;
-    }
+    };
 
     useEffect(() => {
         let deadline;
@@ -68,6 +76,15 @@ const Timer = () => {
         }
     }, [isTimerComplete]);
 
+    // const isDisabled = (index) => {
+    //     const now = new Date();
+    //     const startHour = index;
+    //     const endHour = (index + 1) % 24;
+    //     const currentHour = now.getHours();
+
+    //     return (currentHour >= endHour);
+    // };
+
     return (
         <>
             <div className='d-grid gap-2 col-1 mx-auto'>
@@ -85,6 +102,21 @@ const Timer = () => {
                     <b>Result</b>
                 </button>
             </div> */}
+            {/* {hours.map((hour, index) => (
+                <div className="form-check form-check-inline" key={index}>
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id={`inlineRadio${index}`}
+                        defaultValue={`option${index}`}
+                        disabled={isDisabled(index)}
+                    />
+                    <label className="form-check-label" htmlFor={`inlineRadio${index}`}>
+                        {hour} to {hours[(index + 1) % 24]}
+                    </label>
+                </div>
+            ))} */}
         </>
     );
 }

@@ -5,25 +5,41 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 const Play = () => {
+  const formatHour = (hour) => {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}${period}`;
+  };
+
+  const isDisabled = (index) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const endHour = (index + 1) % 24;
+    return currentHour >= endHour;
+  };
+
+  const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
+  const userId = localStorage.getItem("userId");
+
   const [ticket, setTicket] = useState({});
   const [tickets, setTickets] = useState([]);
   const [categories, setCategories] = useState({});
   const [selectedNumbers, setSelectedNumbers] = useState(() => {
-    const storedNumbers = localStorage.getItem("selectedNumbers");
+    const storedNumbers = localStorage.getItem(`selectedNumbers_${userId}`);
     return storedNumbers ? JSON.parse(storedNumbers) : {};
   });
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    const storedCategory = localStorage.getItem("selectedCategory");
+    const storedCategory = localStorage.getItem(`selectedCategory_${userId}`);
     return storedCategory || "";
   });
   const [selectedTicketId, setSelectedTicketId] = useState(() => {
-    const storedTicketId = localStorage.getItem("selectedTicketId");
+    const storedTicketId = localStorage.getItem(`selectedTicketId_${userId}`);
     return storedTicketId || "";
   });
+  const [selectedHourIndex, setSelectedHourIndex] = useState(null);
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
 
     if (!userId) {
       console.log("User ID not found in localStorage.");
@@ -60,18 +76,18 @@ const Play = () => {
       setCategories(formattedCategories);
 
       const storedSelectedNumbers = JSON.parse(
-        localStorage.getItem("selectedNumbers")
+        localStorage.getItem(`selectedNumbers_${userId}`)
       );
       if (storedSelectedNumbers) {
         setSelectedNumbers(storedSelectedNumbers);
       }
 
-      const storedCategory = localStorage.getItem("selectedCategory");
+      const storedCategory = localStorage.getItem(`selectedCategory_${userId}`);
       if (storedCategory) {
         setSelectedCategory(storedCategory);
       }
 
-      const storedTicketId = localStorage.getItem("selectedTicketId");
+      const storedTicketId = localStorage.getItem(`selectedTicketId_${userId}`);
       if (storedTicketId) {
         setSelectedTicketId(storedTicketId);
       }
@@ -85,87 +101,104 @@ const Play = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("selectedNumbers", JSON.stringify(selectedNumbers));
-  }, [selectedNumbers]);
+    localStorage.setItem(`selectedNumbers_${userId}`, JSON.stringify(selectedNumbers));
+  }, [selectedNumbers, userId]);
 
   useEffect(() => {
-    localStorage.setItem("selectedCategory", selectedCategory);
-  }, [selectedCategory]);
+    localStorage.setItem(`selectedCategory_${userId}`, selectedCategory);
+  }, [selectedCategory, userId]);
 
   useEffect(() => {
-    localStorage.setItem("selectedTicketId", selectedTicketId);
-  }, [selectedTicketId]);
+    localStorage.setItem(`selectedTicketId_${userId}`, selectedTicketId);
+  }, [selectedTicketId, userId]);
 
-  const handleNumberClick = async (number) => {
+  const handleNumberClick = async (number, hourIndex) => {
     if (!selectedCategory) {
       toast.warning("Please select a category first.");
       return;
     }
-  
-    // Check if selected ticket exists
+
     const selectedTicket = tickets.find((ticket) => ticket._id === selectedTicketId);
     if (!selectedTicket) {
       toast.error("Selected ticket not found.");
       return;
     }
-  
-    // Check if wallet balance is sufficient
+
     if (ticket.amount < selectedTicket.amount) {
       toast.error("Insufficient balance. Please recharge your wallet.");
+      const categoryNumbers = selectedNumbers[selectedTicketId] || [];
+      if (categoryNumbers.includes(number)) {
+        setSelectedNumbers((prevSelectedNumbers) => ({
+          ...prevSelectedNumbers,
+          [selectedTicketId]: categoryNumbers.filter((selectedNumber) => selectedNumber !== number),
+        }));
+        await deleteTicket(selectedTicket._id, number, hourIndex);
+      }
       return;
     }
-  
+
     const categoryNumbers = selectedNumbers[selectedTicketId] || [];
-  
+
     if (categoryNumbers.includes(number)) {
-      // Deselect the number
       setSelectedNumbers((prevSelectedNumbers) => ({
         ...prevSelectedNumbers,
         [selectedTicketId]: categoryNumbers.filter((selectedNumber) => selectedNumber !== number),
       }));
-      await deleteTicket(selectedTicket._id, number);
+      await deleteTicket(selectedTicket._id, number, hourIndex);
     } else {
-      // Select the number
       setSelectedNumbers((prevSelectedNumbers) => ({
         ...prevSelectedNumbers,
         [selectedTicketId]: [...categoryNumbers, number],
       }));
-      await fetchTicket(selectedTicket._id, number);
+      await fetchTicket(selectedTicket._id, number, hourIndex);
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      let userId = localStorage.getItem("userId");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      const userResponse = await axios.get(
+        `http://localhost:8000/api/user/read?userId=${userId}`,
+        { headers }
+      );
+      setTicket(userResponse.data.response);
+    } catch (error) {
+      console.error("Error updating wallet balance:", error);
+      toast.error("Error updating wallet balance. Please try again later.");
     }
   };
-  
 
-  const fetchTicket = async (ticketId, number) => {
+  const fetchTicket = async (ticketId, number, hourIndex) => {
     const token = localStorage.getItem("token");
     try {
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-  
-      // Check if selected ticket exists
+
       const selectedTicket = tickets.find((ticket) => ticket._id === ticketId);
       if (!selectedTicket) {
         toast.error("Selected ticket not found.");
         return;
       }
-  
-      // Check if wallet balance is sufficient
-      if (ticket.amount < selectedTicket.amount) {
-        toast.error("Insufficient balance. Please recharge your wallet.");
-        return;
-      }
-  
-      // Proceed with API call
+
+      const startHour = hours[hourIndex];
+      const endHour = hours[(hourIndex + 1) % 24];
+
       const response = await axios.post(
         "http://localhost:8000/api/ticketNumber/create",
         {
           ticketId,
           ticketNumber: number,
+          slotTime: `${startHour}-${endHour}`,
         },
         { headers }
       );
-  
+
       console.log("Ticket selection response:", response.data);
       if (response.data.success) {
         setTicket((prevTicket) => ({
@@ -173,7 +206,6 @@ const Play = () => {
           amount: response.data.response.amount,
         }));
         setSelectedNumbers((prevSelectedNumbers) => ({
-          ...prevSelectedNumbers,
           [ticketId]: [...(prevSelectedNumbers[ticketId] || []), number],
         }));
         toast.success("Ticket selected successfully.");
@@ -185,9 +217,8 @@ const Play = () => {
       toast.error("Error selecting ticket. Please try again later.");
     }
   };
-  
 
-  const deleteTicket = async (ticketId, ticketNumber) => {
+  const deleteTicket = async (ticketId, ticketNumber, hourIndex) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -201,12 +232,16 @@ const Play = () => {
         Authorization: `Bearer ${token}`,
       };
 
+      const startHour = hours[hourIndex];
+      const endHour = hours[(hourIndex + 1) % 24];
+
       const response = await axios.delete(
         "http://localhost:8000/api/ticketNumber/delete",
         {
           data: {
             ticketId,
             ticketNumber,
+            slotTime: `${startHour}-${endHour}`,
           },
           headers,
         }
@@ -219,12 +254,13 @@ const Play = () => {
           ...prevTicket,
           amount: response.data.response.amount,
         }));
+
         setSelectedNumbers((prevSelectedNumbers) => ({
-          ...prevSelectedNumbers,
           [ticketId]: prevSelectedNumbers[ticketId].filter(
             (num) => num !== ticketNumber
           ),
         }));
+
         toast.success("Ticket deselected and deleted successfully.");
       } else {
         toast.error(response.data.message || "Error deselecting ticket.");
@@ -238,27 +274,47 @@ const Play = () => {
   const handleCategoryChange = (e) => {
     const category = e.target.value;
     const ticket = tickets.find((t) => t.amount === parseFloat(category));
-    const ticketId = ticket ? ticket._id : "";
 
-    setSelectedTicketId(ticketId);
+    // Clear selected numbers and ticket ID for previous slot
     setSelectedCategory(category);
+    setSelectedTicketId(ticket ? ticket._id : "");
+    
+    // Fetch stored selected numbers for the new category from local storage
+    const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}`)) || {};
+    setSelectedNumbers(storedSelectedNumbers[selectedTicketId] || {});
   };
+  
 
-  const numbers = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,
-    79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-    98, 99, 100,
-  ];
+  const numbers = Array.from({ length: 100 }, (_, index) => index + 1); // Define the numbers array
+
   const rows = [];
   for (let i = 0; i < numbers.length; i += 10) {
     rows.push(numbers.slice(i, i + 10));
   }
+
   return (
     <>
       <DashboardHeader />
+      <div className="wallet text-center">
+        <h2>Slot Times</h2>
+      </div>
+      {hours.map((hour, index) => (
+        <div className="form-check form-check-inline" key={index}>
+          <input
+            className="form-check-input"
+            type="radio"
+            name="inlineRadioOptions"
+            id={`inlineRadio${index}`}
+            defaultValue={`option${index}`}
+            disabled={isDisabled(index)}
+            onClick={() => setSelectedHourIndex(index)}
+          />
+          
+          <label className="form-check-label" htmlFor={`inlineRadio${index}`}>
+            {hour} - {hours[(index + 1) % 24]}
+          </label>
+        </div>
+      ))}
       <div className="main-home1">
         <div className="container-fluid">
           <div className="row">
@@ -277,7 +333,7 @@ const Play = () => {
                             return (
                               <td
                                 key={colIndex}
-                                onClick={() => handleNumberClick(number)}
+                                onClick={() => handleNumberClick(number, selectedHourIndex)}
                                 className={isSelected ? "selected" : ""}
                               >
                                 {number}
@@ -319,7 +375,7 @@ const Play = () => {
               </div>
               <div className="side-panel">
                 <p>
-                  <b>Selected Numbers</b>
+                  <b>MY GAME </b>
                 </p>
                 {Object.entries(categories).map(([category, label]) => (
                   <div key={category}>
