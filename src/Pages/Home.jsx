@@ -3,8 +3,8 @@ import Header from '../Common/Header';
 import Footer from '../Common/Footer';
 
 function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedNumber, setSelectedNumber] = useState(null); 
+  const [isLoggedIn] = useState(false);
+  const [ setSelectedNumber] = useState(null); 
 
   const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
 
@@ -21,9 +21,7 @@ function Home() {
   };
 
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+
 
   return (
     <>

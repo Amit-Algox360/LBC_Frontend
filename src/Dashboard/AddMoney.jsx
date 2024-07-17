@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import DashboardHeader from './DashboardHeader';
-import useRazorpay from "react-razorpay";
+// import useRazorpay from "react-razorpay";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE_URL } from '../Api/data';
@@ -10,7 +10,6 @@ import { REACT_APP_RAZOR_PAY_API_KEY_TEST } from '../Api/data';
 
 function AddMoney() {
   const [amount, setAmount] = useState(0);
-  const Razorpay = useRazorpay();
 
   const handleAmountChange = (e) => {
     setAmount(parseFloat(e.target.value));
@@ -75,7 +74,7 @@ function AddMoney() {
               throw new Error(errorData.message || 'Payment verification failed');
             }
 
-            const verifyData = await verifyResponse.json();
+            // const verifyData = await verifyResponse.json();
             toast.success("Payment Added Your Account!");
           } catch (error) {
             toast.error('Error verifying payment: ' + error.message);

@@ -4,7 +4,7 @@ import Home from "./Pages/Home";
 import Main from "./Dashboard/Main";
 import Play from "./Dashboard/Play";
 import Activity from "./Dashboard/Activity";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {Routes, Route } from "react-router-dom";
 import Upadate from "./Dashboard/Upadate";
 import Cpassword from "./Dashboard/Cpassword";
 import AdminHome from "./Admin";
@@ -16,7 +16,6 @@ import Car from "./prac";
 import Createticket from "./Admin/createticket";
 import Timer from "./Dashboard/Timer";
 import Result from "./Dashboard/Result";
-import Game from "./Dashboard/game";
 function App() {
   return (
  
@@ -38,7 +37,6 @@ function App() {
       <Route path="createticket" element={<Createticket />}/>
       <Route path="timer" element={<Timer />}/>
       <Route path="/result" element={<Result />}/>
-      <Route path="/game" element={<Game />}/>
 
     </Routes>
 

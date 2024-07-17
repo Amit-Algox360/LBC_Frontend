@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardHeader from './DashboardHeader';
+import { Link } from 'react-router-dom';
 export default function Main() {
     return (
         <>
@@ -30,19 +31,19 @@ export default function Main() {
                             <div className='balance'>
                                 <ul className='category-links'>
                                     <li>
-                                        <a href='activity'> Activity</a>
+                                        <Link to='activity'> Activity</Link>
                                     </li>
                                     <li>
-                                        <a href='#'> Send Money</a>
+                                        <Link to='#'> Send Money</Link>
                                     </li>
                                     <li>
-                                        <a href='#'> Request Money</a>
+                                        <Link to='#'> Request Money</Link>
                                     </li>
                                     <li>
-                                        <a href='addMoney'> Add Money</a>
+                                        <Link to='addMoney'> Add Money</Link>
                                     </li>
                                     <li>
-                                        <a href='withdrawl'> Withdraw Money</a>
+                                        <Link to='withdrawl'> Withdraw Money</Link>
                                     </li>
                                 </ul>
                             </div>
@@ -51,16 +52,16 @@ export default function Main() {
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <td scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
-                                        <br/>Sep</td>
+                                        <th scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
+                                        <br/>Sep</th>
                                         <td style={{ color: "#727272" ,fontSize: "14px" , fontWeight:"300"}}>	Withdraw By PayPal</td>
                                         <td style={{textAlign:"right", color: "#727272" ,fontSize: "20px"}}><b> $ 200.00</b> </td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr>
-                                    <td scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
-                                        <br/>Sep</td>
+                                    <th scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
+                                        <br/>Sep</th>
                                         <td style={{ color: "#727272" ,fontSize: "14px" , fontWeight:"300"}}>	Withdraw By PayPal</td>
                                         <td style={{textAlign:"right", color: "#727272" ,fontSize: "20px"}}><b> $ 200.00</b> </td>
                                     </tr>

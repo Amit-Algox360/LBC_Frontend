@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import DashboardHeader from './DashboardHeader';
 import axios from 'axios';
-import Timer from './Timer';
 
 function getDate() {
   const today = new Date();
@@ -12,7 +11,7 @@ function getDate() {
 }
 
 const Result = () => {
-  const [currentDate, setCurrentDate] = useState(getDate());
+  const [currentDate] = useState(getDate());
   const [timer, setTimer] = useState("00:00:10");
   const [isTimerComplete, setIsTimerComplete] = useState(false);
   const Ref = useRef(null);

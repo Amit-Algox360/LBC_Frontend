@@ -22,7 +22,7 @@ function Register() {
   });
 
   const [errors, setErrors] = useState({});
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [ setRegistrationSuccess] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -123,8 +123,8 @@ function Register() {
   };
 
   // Country Api
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState({});
+  const [ setCountries] = useState([]);
+  const [ setSelectedCountry] = useState({});
 
   // useEffect(() => {
   //   fetch(

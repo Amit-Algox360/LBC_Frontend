@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Header from "./header";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const Data = () => {
-  const navigate = useNavigate();
   const [ticket, setTicket] = useState([]);
 
 

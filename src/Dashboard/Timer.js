@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const Timer = () => {
     const [timer, setTimer] = useState("01:00:00");
     const [isTimerComplete, setIsTimerComplete] = useState(false);
     const Ref = useRef(null);
-    const navigate = useNavigate();
-
     // const formatHour = (hour) => {
     //     const period = hour >= 12 ? 'PM' : 'AM';
     //     const formattedHour = hour % 12 || 12; 
