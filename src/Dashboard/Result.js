@@ -1,21 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import DashboardHeader from './DashboardHeader';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from "react";
+import DashboardHeader from "./DashboardHeader";
+import axios from "axios";
 
 function getDate() {
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
   const date = today.getDate();
-  return `${month}/${date}/${year}`;
+  return `${date}/${month}/${year}`;
 }
 
+
 const Result = () => {
+  const [ticket, setTicket] = useState([]);
   const [currentDate] = useState(getDate());
   const [timer, setTimer] = useState("00:00:10");
   const [isTimerComplete, setIsTimerComplete] = useState(false);
   const Ref = useRef(null);
   const [result, setResult] = useState(null);
+
+  const formatHour = (hour) => {
+    const period = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}${period}`;
+  };
+  
+
+  const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
 
   useEffect(() => {
     function getTimeRemaining(e) {
@@ -31,9 +42,11 @@ const Result = () => {
       let { total, hours, minutes, seconds } = getTimeRemaining(e);
       if (total >= 0) {
         setTimer(
-          (hours > 9 ? hours : "0" + hours) + ':' +
-          (minutes > 9 ? minutes : "0" + minutes) + ':' +
-          (seconds > 9 ? seconds : "0" + seconds)
+          (hours > 9 ? hours : "0" + hours) +
+            ":" +
+            (minutes > 9 ? minutes : "0" + minutes) +
+            ":" +
+            (seconds > 9 ? seconds : "0" + seconds)
         );
       } else {
         setIsTimerComplete(true);
@@ -56,13 +69,13 @@ const Result = () => {
     }
 
     let deadline;
-    const savedDeadline = localStorage.getItem('deadline');
+    const savedDeadline = localStorage.getItem("deadline");
 
     if (savedDeadline) {
       deadline = new Date(savedDeadline);
     } else {
       deadline = getDeadTime();
-      localStorage.setItem('deadline', deadline);
+      localStorage.setItem("deadline", deadline);
     }
 
     clearTimer(deadline);
@@ -74,42 +87,112 @@ const Result = () => {
 
   useEffect(() => {
     if (isTimerComplete) {
-      localStorage.removeItem('deadline');
+      localStorage.removeItem("deadline");
     }
   }, [isTimerComplete]);
 
-  const fetchResult = async (ticketId) => {
+  const fetchResult = async (ticketId, hourIndex) => {
     const token = localStorage.getItem("token");
     try {
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.get(`http://localhost:8000/api/user/result?ticketCategoryId=${ticketId}`, { headers });
+      const startHour = hours[hourIndex];
+      const endHour = hours[(hourIndex + 1) % 24];
+      const response = await axios.get(
+        "http://localhost:8000/api/user/result",
+        {
+          ticketId,
+          slotTime: `${startHour}-${endHour}`,
+        },
+        {
+          headers,
+        }
+      );
       setResult(response.data.response);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const categories = [
-    { id: 1, name: "Rs.50",  },
-    { id: 2, name: "Rs.500",  },
-    { id: 3, name: "Rs.5000",},
-    { id: 4, name: "Rs.6000",  },
-  ];
+
+  const handledeclare = async (ticketId, hourIndex) => {
+    try {
+        const token = localStorage.getItem('token');
+        const startHour = hours[hourIndex];
+        const endHour = hours[(hourIndex + 1) % 24];
+        const response = await axios.post('http://localhost:8000/api/user/result', {
+          ticketId,
+          slotTime: `${startHour}-${endHour}`,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `bearer ${token}`
+            }
+        });
+
+        if (response.data.status === 401) {
+            console.log(response.data.message);
+        } else if (response.data.status === 201) {
+            console.log("===...",response.data.response);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+  useEffect(() => {
+    const fetchticket = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await axios.get(
+          "http://localhost:8000/api/ticket/read",
+          { headers }
+        );
+        setTicket(response.data.response);
+        console.log("==>", response.data.response);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchticket();
+  }, []);
 
   return (
     <>
       <DashboardHeader />
-      <div className='container'>
-        <div className='row'>
-          <h1 className='text-center text-uppercase fw-bold p-3'>IBC-Wallet day result {currentDate}</h1>
+      <div className="container">
+        <div className="row">
+          <h1 className="text-center text-uppercase fw-bold p-3">
+            IBC-Wallet day result {currentDate}
+          </h1>
         </div>
       </div>
-      <div className='container'>
-        <div className='row'>
-          <div className='d-grid gap-2 col-1 mx-auto'>
+      <div className="container">
+        <div className="row">
+          {ticket.map((item, index) => (
+            <div key={index}>
+              <h2 className="fw-bold d-inline">{item.amount}</h2>
+            </div>
+          ))}
+        </div>
+      </div> 
+       {hours.map((hour, index) => (
+        <button
+          key={index}
+          onClick={() => handledeclare(index)}
+        >
+          {hour} - {hours[(index + 1) % 24]}
+        </button>
+      ))}
+
+      {/* <div className='d-grid gap-2 col-1 mx-auto'>
             <h1>{timer}</h1>
           </div>
           <div>
@@ -118,7 +201,7 @@ const Result = () => {
                 <h2 className='fw-bold d-inline'>Category {category.name}</h2>
                 <span>
                   <button
-                    onClick={() => fetchResult(category.ticketId)}
+                    onClick={() => fetchResult(category.id, new Date().getHours())}
                     disabled={!isTimerComplete}
                     style={{
                       backgroundColor: isTimerComplete ? 'green' : 'gray',
@@ -136,11 +219,9 @@ const Result = () => {
                 <p>{result}</p>
               </div>
             )}
-          </div>
-        </div>
-      </div>
+          </div> */}
     </>
   );
-}
+};
 
 export default Result;

@@ -331,4 +331,13 @@ display: flex;
   font-size: 1rem !important;
 }
 
+.slot-time-button.selected {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.number-button.selected {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
 

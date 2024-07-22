@@ -25,18 +25,44 @@ const Play = () => {
   const [tickets, setTickets] = useState([]);
   const [categories, setCategories] = useState({});
   const [selectedNumbers, setSelectedNumbers] = useState(() => {
-    const storedNumbers = localStorage.getItem(`selectedNumbers_${userId}`);
-    return storedNumbers ? JSON.parse(storedNumbers) : {};
+    try {
+      const storedNumbers = localStorage.getItem(`selectedNumbers_${userId}`);
+      return storedNumbers ? JSON.parse(storedNumbers) : {};
+    } catch (error) {
+      console.error("Error parsing selectedNumbers from localStorage:", error);
+      return {};
+    }
   });
+  
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    const storedCategory = localStorage.getItem(`selectedCategory_${userId}`);
-    return storedCategory || "";
+    try {
+      const storedCategory = localStorage.getItem(`selectedCategory_${userId}`);
+      return storedCategory || "";
+    } catch (error) {
+      console.error("Error fetching selectedCategory from localStorage:", error);
+      return "";
+    }
   });
+  
   const [selectedTicketId, setSelectedTicketId] = useState(() => {
-    const storedTicketId = localStorage.getItem(`selectedTicketId_${userId}`);
-    return storedTicketId || "";
+    try {
+      const storedTicketId = localStorage.getItem(`selectedTicketId_${userId}`);
+      return storedTicketId || "";
+    } catch (error) {
+      console.error("Error fetching selectedTicketId from localStorage:", error);
+      return "";
+    }
   });
-  const [selectedHourIndex, setSelectedHourIndex] = useState(null);
+  
+  
+
+  const [selectedHourIndex, setSelectedHourIndex] = useState(() => {
+
+    const storedHourIndex = localStorage.getItem("selectedHourIndex");
+
+    return storedHourIndex ? parseInt(storedHourIndex) : null;
+
+  });
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -97,12 +123,19 @@ const Play = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem(`selectedNumbers_${userId}`, JSON.stringify(selectedNumbers));
   }, [selectedNumbers, userId]);
+
+  useEffect(() => {
+    const storedNumbers = localStorage.getItem(`selectedNumbers_${userId}`);
+    if (storedNumbers) {
+      setSelectedNumbers(JSON.parse(storedNumbers));
+    }
+  }, [userId]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
 
   useEffect(() => {
     localStorage.setItem(`selectedCategory_${userId}`, selectedCategory);
@@ -111,6 +144,16 @@ const Play = () => {
   useEffect(() => {
     localStorage.setItem(`selectedTicketId_${userId}`, selectedTicketId);
   }, [selectedTicketId, userId]);
+  
+  useEffect(() => {
+
+    if (selectedHourIndex !== null) {
+
+      localStorage.setItem("selectedHourIndex", selectedHourIndex);
+
+    }
+
+  }, [selectedHourIndex]);
 
   const handleNumberClick = async (number, hourIndex) => {
     if (!selectedCategory) {
@@ -255,13 +298,23 @@ const Play = () => {
           amount: response.data.response.amount,
         }));
 
-        setSelectedNumbers((prevSelectedNumbers) => ({
-          [ticketId]: prevSelectedNumbers[ticketId].filter(
-            (num) => num !== ticketNumber
-          ),
-        }));
+        setSelectedNumbers((prevSelectedNumbers) => {
 
-        toast.success("Ticket deselected and deleted successfully.");
+          const newSelectedNumbers = { ...prevSelectedNumbers };
+
+          const updatedNumbers = newSelectedNumbers[ticketId].filter(
+
+            (num) => num !== ticketNumber
+
+          );
+          if (updatedNumbers.length === 0) {
+            delete newSelectedNumbers[ticketId];
+          } else {
+            newSelectedNumbers[ticketId] = updatedNumbers;
+          }
+          return newSelectedNumbers;
+
+        });
       } else {
         toast.error(response.data.message || "Error deselecting ticket.");
       }
@@ -270,71 +323,74 @@ const Play = () => {
       toast.error("Error deselecting ticket. Please try again later.");
     }
   };
-
+  const handleSlotTimeClick = (index) => {
+    if (isDisabled(index)) {
+      return;
+    }
+    localStorage.setItem(`selectedNumbers_${selectedHourIndex}`, JSON.stringify(selectedNumbers));
+    setSelectedHourIndex(index);
+    const storedNumbers = localStorage.getItem(`selectedNumbers_${index}`);
+    setSelectedNumbers(storedNumbers ? JSON.parse(storedNumbers) : {});
+  }
+  
   const handleCategoryChange = (e) => {
     const category = e.target.value;
-    const ticket = tickets.find((t) => t.amount === parseFloat(category));
-
-    // Clear selected numbers and ticket ID for previous slot
-    setSelectedCategory(category);
-    setSelectedTicketId(ticket ? ticket._id : "");
+    const selectedTicket = tickets.find((t) => t.amount === parseFloat(category));
     
-    // Fetch stored selected numbers for the new category from local storage
+    setSelectedCategory(category);
+    setSelectedTicketId(selectedTicket ? selectedTicket._id : "");
     const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}`)) || {};
-    setSelectedNumbers(storedSelectedNumbers[selectedTicketId] || {});
+    setSelectedNumbers(storedSelectedNumbers[selectedTicket ? selectedTicket._id : ""] || []);
   };
   
 
-  const numbers = Array.from({ length: 100 }, (_, index) => index + 1); // Define the numbers array
+  const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
 
   const rows = [];
   for (let i = 0; i < numbers.length; i += 10) {
     rows.push(numbers.slice(i, i + 10));
   }
 
-  return (
-    <>
-      <DashboardHeader />
-      <div className="wallet text-center">
-        <h2>Slot Times</h2>
-      </div>
+ const filteredNumbers = selectedNumbers[selectedTicketId] || [];
+
+return (
+  <>
+    <DashboardHeader />
+    <div className="wallet text-center">
+      <h2>Slot Times</h2>
+    </div>
+    <div className="slot-time-container">
       {hours.map((hour, index) => (
-        <div className="form-check form-check-inline" key={index}>
-          <input
-            className="form-check-input"
-            type="radio"
-            name="inlineRadioOptions"
-            id={`inlineRadio${index}`}
-            defaultValue={`option${index}`}
-            disabled={isDisabled(index)}
-            onClick={() => setSelectedHourIndex(index)}
-          />
-          
-          <label className="form-check-label" htmlFor={`inlineRadio${index}`}>
-            {hour} - {hours[(index + 1) % 24]}
-          </label>
-        </div>
+        <button
+          key={index}
+          className={`slot-time-button ${isDisabled(index) ? "disabled" : ""}${selectedHourIndex === index ? "selected" : ""}`}
+          onClick={() => handleSlotTimeClick(index)}
+          disabled={isDisabled(index)}
+        >
+          {hour} - {hours[(index + 1) % 24]}
+        </button>
       ))}
-      <div className="main-home1">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-8">
-              <div className="main-table mt-5">
-                <div className="card-body">
+    </div>
+    <div className="main-home1">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-sm-8">
+            <div className="main-table mt-5">
+              <div className="card-body">
+                {selectedHourIndex !== null && (
                   <table className="table table-bordered" id="customeidbysqube">
                     <tbody>
-                      {rows.map((row, rowIndex) => (
+                      {Array.from({ length: 10 }, (_, rowIndex) => (
                         <tr key={rowIndex}>
-                          {row.map((number, colIndex) => {
-                            const isSelected =
-                              selectedNumbers[selectedTicketId]?.includes(
-                                number
-                              );
+                          {Array.from({ length: 10 }, (_, colIndex) => {
+                            const number = rowIndex * 10 + colIndex + 1;
                             return (
                               <td
-                                key={colIndex}
+                                key={number}
+                                className={`number-button ${
+                                  filteredNumbers.includes(number) ? "selected" : ""
+                                }`}
                                 onClick={() => handleNumberClick(number, selectedHourIndex)}
-                                className={isSelected ? "selected" : ""}
                               >
                                 {number}
                               </td>
@@ -344,58 +400,54 @@ const Play = () => {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                )}
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="wallet text-center">
-                <h2>Wallet Balance: {ticket.amount}</h2>
-              </div>
-              <div className="category">
-                <p>Categories</p>
-                <div className="category-1">
-                  {Object.entries(categories).map(([value, label]) => (
-                    <div key={value}>
-                      <input
-                        type="radio"
-                        id={`cat${value}`}
-                        name="category"
-                        value={value}
-                        onChange={handleCategoryChange}
-                        checked={selectedCategory === value}
-                      />
-                      <span>
-                        <label className="category-2" htmlFor={`cat${value}`}>
-                          {label}
-                        </label>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="side-panel">
-                <p>
-                  <b>MY GAME </b>
-                </p>
-                {Object.entries(categories).map(([category, label]) => (
-                  <div key={category}>
-                    <div className="side-category">{label}:</div>
-                    {tickets
-                      .filter((ticket) => ticket.amount === parseFloat(category))
-                      .map((ticket) =>
-                        (selectedNumbers[ticket._id] || []).map((number) => (
-                          <span key={number}>{number} </span>
-                        ))
-                      )}
+          </div>
+          <div className="col-sm-4">
+            <div className="wallet text-center">
+              <h2>Wallet Balance: {ticket.amount}</h2>
+            </div>
+            <div className="category">
+              <p>Categories</p>
+              <div className="category-1">
+                {Object.entries(categories).map(([value, label]) => (
+                  <div key={value}>
+                    <input
+                      type="radio"
+                      id={`cat${value}`}
+                      name="category"
+                      value={value}
+                      onChange={handleCategoryChange}
+                      checked={selectedCategory === value}
+                    />
+                    <label className="category-2" htmlFor={`cat${value}`}>
+                      {label}
+                    </label>
                   </div>
                 ))}
               </div>
             </div>
+            <div className="side-panel">
+              <p>
+                <b>MY GAME </b>
+              </p>
+              {Object.entries(categories).map(([category, label]) => (
+                <div key={category}>
+                  <div className="side-category">{label}:</div>
+                  {(selectedNumbers[tickets.find((ticket) => ticket.amount === parseFloat(category))?._id] || []).map((number) => (
+                    <span key={number}>{number} </span>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
+
 };
 
 export default Play;
