@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../Api/data";
+import { API_LIVE_URL } from "../Api/data";
 // import Select from "react-select";
 
 function Register() {
@@ -51,7 +52,7 @@ function Register() {
 
     if (isValid) {
       try {
-        const response = await fetch(`${API_BASE_URL}/user/create`, {
+        const response = await fetch(`${API_LIVE_URL}/user/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

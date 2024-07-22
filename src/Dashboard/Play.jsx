@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import DashboardHeader from "./DashboardHeader";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { API_LIVE_URL } from "../Api/data";
+import { API_BASE_URL } from "../Api/data";
 import "react-toastify/dist/ReactToastify.css";
 
 const Play = () => {
@@ -79,13 +81,13 @@ const Play = () => {
       };
 
       const userResponse = await axios.get(
-        `http://localhost:8000/api/user/read?userId=${userId}`,
+        `${API_LIVE_URL}user/read?userId=${userId}`,
         { headers }
       );
       setTicket(userResponse.data.response);
 
       const ticketResponse = await axios.get(
-        "http://localhost:8000/api/ticket/read",
+        `${API_LIVE_URL}ticket/read`,
         { headers }
       );
       const activeTickets = ticketResponse.data.response.filter(
@@ -205,7 +207,7 @@ const Play = () => {
       };
 
       const userResponse = await axios.get(
-        `http://localhost:8000/api/user/read?userId=${userId}`,
+        `${API_LIVE_URL}user/read?userId=${userId}`,
         { headers }
       );
       setTicket(userResponse.data.response);
@@ -233,7 +235,7 @@ const Play = () => {
       const endHour = hours[(hourIndex + 1) % 24];
 
       const response = await axios.post(
-        "http://localhost:8000/api/ticketNumber/create",
+        `${API_LIVE_URL}ticketNumber/create`,
         {
           ticketId,
           ticketNumber: number,
@@ -279,7 +281,7 @@ const Play = () => {
       const endHour = hours[(hourIndex + 1) % 24];
 
       const response = await axios.delete(
-        "http://localhost:8000/api/ticketNumber/delete",
+        `${API_LIVE_URL}ticketNumber/delete`,
         {
           data: {
             ticketId,

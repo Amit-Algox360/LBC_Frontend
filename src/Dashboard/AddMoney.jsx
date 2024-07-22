@@ -4,6 +4,7 @@ import DashboardHeader from './DashboardHeader';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE_URL } from '../Api/data';
+import { API_LIVE_URL } from '../Api/data';
 import { PAYMENT_GATEWAY_LOGO } from '../Api/data';
 import { PAYMENT_GATEWAY_DESCRIPTION } from '../Api/data';
 import { REACT_APP_RAZOR_PAY_API_KEY_TEST } from '../Api/data';
@@ -25,7 +26,7 @@ function AddMoney() {
 
     try {
       const requestData = { amount: amount  };
-      const response = await fetch(`${API_BASE_URL}/payment/create/order`, {
+      const response = await fetch(`${API_LIVE_URL}/payment/create/order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ function AddMoney() {
         handler: async function (response) {
 
           try {
-            const verifyResponse = await fetch(`${API_BASE_URL}/payment/verify`, {
+            const verifyResponse = await fetch(`${API_LIVE_URL}/payment/verify`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

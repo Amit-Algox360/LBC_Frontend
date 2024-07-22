@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../Api/data';
+import { API_LIVE_URL } from '../Api/data';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Createticket = () => {
@@ -12,7 +14,7 @@ const Createticket = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:8000/api/ticket/create', {
+            const response = await axios.post(`${API_LIVE_URL}ticket/create`, {
                 amount: amount
             }, {
                 headers: {

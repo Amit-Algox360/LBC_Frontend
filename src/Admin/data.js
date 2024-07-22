@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "./header";
+import { API_BASE_URL } from "../Api/data";
+import { API_LIVE_URL } from "../Api/data";
 import axios from "axios";
 import { Link} from "react-router-dom";
 
@@ -18,7 +20,7 @@ const Data = () => {
           Authorization: `bearer ${token}`,
         };
         const response = await axios.get(
-          "http://localhost:8000/api/ticket/read",
+          `${API_LIVE_URL}ticket/read`,
           { headers }
         );
         setTicket(response.data.response);
@@ -42,7 +44,7 @@ const Data = () => {
           Authorization: `bearer ${token}`,
         };
         await axios.delete(
-          `http://localhost:8000/api/ticket/delete?ticketId=${_id}`,
+          `${API_LIVE_URL}ticket/delete?ticketId=${_id}`,
           { headers }
         );
         setTicket(ticket.filter((ticket) => ticket._id !== _id));
@@ -62,7 +64,7 @@ const Data = () => {
         Authorization: `bearer ${token}`,
       };
       await axios.put(
-        "http://localhost:8000/api/ticket/update",
+        `${API_LIVE_URL}ticket/update`,
         { ticketId: _id, status: status.toString() },
         { headers }
       );

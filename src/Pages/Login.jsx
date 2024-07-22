@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE_URL } from '../Api/data';
+import { API_LIVE_URL } from '../Api/data';
 
 function Login() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${API_BASE_URL}/auth/login`, {
+    axios.post(`${API_LIVE_URL}/auth/login`, {
       email: email,
       password: password
     })
