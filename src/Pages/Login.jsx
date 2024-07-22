@@ -6,8 +6,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { API_BASE_URL } from '../Api/data';
 import { API_LIVE_URL } from '../Api/data';
+import { API_BASE_URL } from '../Api/data';
 
 function Login() {
   const navigate = useNavigate();
@@ -24,13 +24,15 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${API_LIVE_URL}/auth/login`, {
+    axios.post(`${API_LIVE_URL}auth/login`, {
       email: email,
       password: password
     })
     .then(result => {
       if (result.data.status === 401) {
         toast.error(result.data.message);
+      } else if (result.data.status === 404) {
+        toast.error('User not registered');
       } else if (result.data.status === 201) {
         toast.success('Successfully Logged In');
         localStorage.setItem('userId', result.data.response._id);

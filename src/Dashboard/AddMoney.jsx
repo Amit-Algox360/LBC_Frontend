@@ -26,7 +26,7 @@ function AddMoney() {
 
     try {
       const requestData = { amount: amount  };
-      const response = await fetch(`${API_LIVE_URL}/payment/create/order`, {
+      const response = await fetch(`${API_LIVE_URL}payment/create/order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function AddMoney() {
         handler: async function (response) {
 
           try {
-            const verifyResponse = await fetch(`${API_LIVE_URL}/payment/verify`, {
+            const verifyResponse = await fetch(`${API_LIVE_URL}payment/verify`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

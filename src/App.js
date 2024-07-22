@@ -15,7 +15,7 @@ import Data from "./Admin/data";
 import Car from "./prac";
 import Createticket from "./Admin/createticket";
 import Timer from "./Dashboard/Timer";
-import Result from "./Dashboard/Result";
+import Result from "./Dashboard/Result/Result";
 function App() {
   return (
  

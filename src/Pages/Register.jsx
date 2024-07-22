@@ -52,7 +52,7 @@ function Register() {
 
     if (isValid) {
       try {
-        const response = await fetch(`${API_LIVE_URL}/user/create`, {
+        const response = await fetch(`${API_LIVE_URL}user/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
