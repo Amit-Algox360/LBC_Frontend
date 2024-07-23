@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../../Api/data';
-import { API_LIVE_URL } from '../../Api/data';
 
 const GetResult = () => {
   const [result, setResult] = useState([]);
@@ -15,7 +13,7 @@ const GetResult = () => {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          `${API_LIVE_URL}user/resultFetch/`,
+          "http://localhost:8000/api/user/resultFetch/",
           { headers }
         );
         console.log("Fetched Result Data:", response.data.response);
@@ -41,8 +39,9 @@ const GetResult = () => {
                   </p>
                   {res.ticketId ? (
                     <div className="ticket-details">
-                      <p><strong>Amount:</strong><b> {res.ticketId.amount || "N/A"}</b></p>
-                      <p><strong>Slot Time:</strong><b> {res.slotTime || "N/A"}</b></p>
+                      <p><strong>Ticket ID:</strong> {res.ticketId._id || "N/A"}</p>
+                      <p><strong>Amount:</strong> {res.ticketId.amount || "N/A"}</p>
+                      <p><strong>Slot Time:</strong> {res.slotTime || "N/A"}</p>
                     </div>
                   ) : (
                     <p className="no-ticket-id">No Ticket ID</p>
