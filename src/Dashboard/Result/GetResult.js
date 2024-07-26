@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const GetResult = () => {
+const getMonthName = (monthNumber) => {
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return monthNames[monthNumber];
+}
+
+const GetResult = ({ selectedDate }) => {
   const [result, setResult] = useState([]);
 
   useEffect(() => {
     const fetchResult = async () => {
       const token = localStorage.getItem("token");
+      const date = selectedDate.getDate();
+      const month = getMonthName(selectedDate.getMonth());
       try {
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          "http://localhost:8000/api/user/resultFetch/",
+          `http://localhost:8000/api/user/resultFetch/?month=${month}&date=${date}`,
           { headers }
         );
         console.log("Fetched Result Data:", response.data.response);
@@ -23,7 +30,7 @@ const GetResult = () => {
       }
     };
     fetchResult();
-  }, []);
+  }, [selectedDate]);
 
   return (
     <div className="result-container">

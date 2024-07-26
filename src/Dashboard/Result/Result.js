@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardHeader from "../DashboardHeader";
 import axios from "axios";
 import GetResult from "./GetResult";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function getDate() {
   const today = new Date();
@@ -11,12 +13,17 @@ function getDate() {
   return `${date}/${month}/${year}`;
 }
 
+const getMonthName = (monthNumber) => {
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return monthNames[monthNumber];
+}
+
 const Result = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [ticket, setTicket] = useState([]);
   const [currentDate] = useState(getDate());
   const [currentHour, setCurrentHour] = useState(new Date().getHours());
-  const Ref = useRef(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const formatHour = (hour) => {
     const period = hour >= 12 ? "PM" : "AM";
@@ -46,8 +53,6 @@ const Result = () => {
       }
     };
     fetchticket();
-
-    // Update current hour every minute
     const intervalId = setInterval(() => {
       setCurrentHour(new Date().getHours());
     }, 60000);
@@ -58,6 +63,8 @@ const Result = () => {
   const handleDeclare = async (ticketCategoryId, hourIndex) => {
     try {
       const token = localStorage.getItem('token');
+      const date = selectedDate.getDate();
+      const month = getMonthName(selectedDate.getMonth());
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -66,10 +73,10 @@ const Result = () => {
       const endHour = hours[(hourIndex + 1) % 24];
       const response = await axios.post(
         'http://localhost:8000/api/user/result',
-        { ticketCategoryId, slotTime: `${startHour}-${endHour}` },
+        { ticketCategoryId, slotTime: `${startHour}-${endHour}`, month, date },
         { headers }
       );
-  
+
       if (response.data.status === 401) {
         console.log(response.data.message);
       } else if (response.data.status === 201) {
@@ -78,7 +85,6 @@ const Result = () => {
           luckyNumber: response.data.response.luckyNumber
         });
 
-        // Reload the page immediately after declaring
         window.location.reload();
       }
     } catch (e) {
@@ -100,8 +106,6 @@ const Result = () => {
 
     const slotStartTime = parseTime(slotHour);
     const slotEndTime = parseTime(slotHourEnd);
-
-    // Enable slots that are in the past relative to the current time
     return now >= slotEndTime;
   };
 
@@ -113,6 +117,14 @@ const Result = () => {
           <h1 className="text-center text-uppercase fw-bold p-3">
             IBC-Wallet Day Result {currentDate}
           </h1>
+          <div className="col-12 d-flex justify-content-center">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              className="form-control"
+              dateFormat="dd/MM/yyyy"
+            />
+          </div>
         </div>
       </div>
       <div className="container3">
@@ -144,7 +156,7 @@ const Result = () => {
           ))}
         </div>
       </div>
-      <GetResult />
+      <GetResult selectedDate={selectedDate} />
     </>
   );
 };
