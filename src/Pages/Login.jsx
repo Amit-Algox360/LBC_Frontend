@@ -35,6 +35,7 @@ function Login() {
         toast.error('User not registered');
       } else if (result.data.status === 201) {
         toast.success('Successfully Logged In');
+        localStorage.setItem('customerId',result.data.response.customerId)
         localStorage.setItem('userId', result.data.response._id);
         localStorage.setItem('token', result.data.token); 
         navigate('/main');

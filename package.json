@@ -11,6 +11,8 @@
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "bootstrap-scss": "^5.3.3",
+    "buffer": "^6.0.3",
+    "http-proxy-middleware": "^3.0.0",
     "razorpay": "^2.9.3",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
@@ -37,6 +39,7 @@
       "react-app/jest"
     ]
   },
+  "proxy": "https://api.razorpay.com",
   "browserslist": {
     "production": [
       ">0.2%",
