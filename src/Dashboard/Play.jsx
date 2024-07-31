@@ -15,9 +15,26 @@ const Play = () => {
 
   const isDisabled = (index) => {
     const now = new Date();
-    const currentHour = now.getHours();
-    const endHour = (index + 1) % 24;
-    return currentHour >= endHour;
+    const slotStartHour = hours[index];
+    const slotEndHour = hours[(index + 1) % 24];
+  
+    const parseTime = (timeStr) => {
+      const [hour, period] = timeStr.match(/(\d+)(AM|PM)/).slice(1);
+      const date = new Date();
+      let hour24 = parseInt(hour, 10);
+      if (period === "PM" && hour !== "12") hour24 += 12;
+      if (period === "AM" && hour === "12") hour24 = 0;
+      return new Date(date.setHours(hour24, 0, 0, 0));
+    };
+  
+    const slotStartTime = parseTime(slotStartHour);
+    const slotEndTime = parseTime(slotEndHour);
+  
+    if (slotStartTime > slotEndTime) {
+      return now >= slotStartTime || now < slotEndTime;
+    }
+  
+    return now >= slotStartTime &&  slotEndTime;
   };
 
   const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
@@ -331,7 +348,7 @@ const Play = () => {
     localStorage.setItem(`selectedNumbers_${userId}_${selectedCategory}`, JSON.stringify(selectedNumbers));
     setSelectedCategory(category);
     setSelectedTicketId(selectedTicket ? selectedTicket._id : "");
-    const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}_${category}`)) || [];
+    const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}_${selectedCategory}`)) || [];
     setSelectedNumbers(storedSelectedNumbers);
   };
   

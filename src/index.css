@@ -345,7 +345,6 @@ display: flex;
 
 .result-container {
   padding: 20px;
-  max-width: 800px;
   margin: auto;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -365,12 +364,12 @@ display: flex;
 
 .result-item {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  display: ruby;
 }
 
-.result-item:last-child {
+/* .result-item:last-child {
   border-bottom: none;
-}
+} */
 
 .result-details {
   display: flex;

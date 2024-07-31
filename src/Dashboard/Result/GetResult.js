@@ -41,12 +41,11 @@ const GetResult = ({ selectedDate }) => {
             {result.map((res, index) => (
               <li key={index} className="result-item">
                 <div className="result-details">
-                  <p className="result-lucky-number">
-                    <strong>Lucky Number:</strong> {res.luckyNumber || "N/A"}
-                  </p>
                   {res.ticketId ? (
                     <div className="ticket-details">
-                      <p><strong>Ticket ID:</strong> {res.ticketId._id || "N/A"}</p>
+                    <p>
+                    <strong>Lucky Number:</strong> {res.luckyNumber || "N/A"}
+                  </p>
                       <p><strong>Amount:</strong> {res.ticketId.amount || "N/A"}</p>
                       <p><strong>Slot Time:</strong> {res.slotTime || "N/A"}</p>
                     </div>

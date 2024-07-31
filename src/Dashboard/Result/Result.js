@@ -94,20 +94,28 @@ const Result = () => {
 
   const isSlotEnabled = (hourIndex) => {
     const now = new Date();
-    const slotHour = hours[hourIndex];
-    const slotHourEnd = hours[(hourIndex + 1) % 24];
-
+    const slotStartHour = hours[hourIndex];
+    const slotEndHour = hours[(hourIndex + 1) % 24];
+  
     const parseTime = (timeStr) => {
       const [hour, period] = timeStr.match(/(\d+)(AM|PM)/).slice(1);
       const date = new Date();
-      const hour24 = period === "PM" && hour !== "12" ? parseInt(hour) + 12 : hour;
+      let hour24 = parseInt(hour, 10);
+      if (period === "PM" && hour !== "12") hour24 += 12;
+      if (period === "AM" && hour === "12") hour24 = 0;
       return new Date(date.setHours(hour24, 0, 0, 0));
     };
-
-    const slotStartTime = parseTime(slotHour);
-    const slotEndTime = parseTime(slotHourEnd);
-    return now >= slotEndTime;
+  
+    const slotStartTime = parseTime(slotStartHour);
+    const slotEndTime = parseTime(slotEndHour);
+  
+    if (slotStartTime > slotEndTime) {
+      return now >= slotStartTime || now < slotEndTime;
+    }
+  
+    return now >= slotStartTime &&  slotEndTime;
   };
+  
 
   return (
     <>
