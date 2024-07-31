@@ -31,7 +31,6 @@ const Play = () => {
       const storedNumbers = localStorage.getItem(`selectedNumbers_${userId}`);
       return storedNumbers ? JSON.parse(storedNumbers) : {};
     } catch (error) {
-      console.error("Error parsing selectedNumbers from localStorage:", error);
       return {};
     }
   });
@@ -41,7 +40,6 @@ const Play = () => {
       const storedCategory = localStorage.getItem(`selectedCategory_${userId}`);
       return storedCategory || "";
     } catch (error) {
-      console.error("Error fetching selectedCategory from localStorage:", error);
       return "";
     }
   });
@@ -51,7 +49,6 @@ const Play = () => {
       const storedTicketId = localStorage.getItem(`selectedTicketId_${userId}`);
       return storedTicketId || "";
     } catch (error) {
-      console.error("Error fetching selectedTicketId from localStorage:", error);
       return "";
     }
   });
@@ -70,7 +67,6 @@ const Play = () => {
     const token = localStorage.getItem("token");
 
     if (!userId) {
-      console.log("User ID not found in localStorage.");
       return;
     }
 
@@ -120,7 +116,6 @@ const Play = () => {
         setSelectedTicketId(storedTicketId);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
     }
   };
 
@@ -212,7 +207,6 @@ const Play = () => {
       );
       setTicket(userResponse.data.response);
     } catch (error) {
-      console.error("Error updating wallet balance:", error);
       toast.error("Error updating wallet balance. Please try again later.");
     }
   };
@@ -244,7 +238,6 @@ const Play = () => {
         { headers }
       );
 
-      console.log("Ticket selection response:", response.data);
       if (response.data.success) {
         setTicket((prevTicket) => ({
           ...prevTicket,
@@ -255,10 +248,9 @@ const Play = () => {
         }));
         toast.success("Ticket selected successfully.");
       } else {
-        toast.error(response.data.message || "Error selecting ticket.");
+        toast.success(response.data.message || "Error selecting ticket.");
       }
     } catch (error) {
-      console.error("Error selecting ticket:", error);
       toast.error("Error selecting ticket. Please try again later.");
     }
   };
@@ -292,7 +284,6 @@ const Play = () => {
         }
       );
 
-      console.log("Ticket deletion response:", response.data);
 
       if (response.data.success) {
         setTicket((prevTicket) => ({
@@ -321,7 +312,6 @@ const Play = () => {
         toast.error(response.data.message || "Error deselecting ticket.");
       }
     } catch (error) {
-      console.error("Error deselecting ticket:", error);
       toast.error("Error deselecting ticket. Please try again later.");
     }
   };
@@ -338,12 +328,13 @@ const Play = () => {
   const handleCategoryChange = (e) => {
     const category = e.target.value;
     const selectedTicket = tickets.find((t) => t.amount === parseFloat(category));
-    
+    localStorage.setItem(`selectedNumbers_${userId}_${selectedCategory}`, JSON.stringify(selectedNumbers));
     setSelectedCategory(category);
     setSelectedTicketId(selectedTicket ? selectedTicket._id : "");
-    const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}`)) || {};
-    setSelectedNumbers(storedSelectedNumbers[selectedTicket ? selectedTicket._id : ""] || []);
+    const storedSelectedNumbers = JSON.parse(localStorage.getItem(`selectedNumbers_${userId}_${category}`)) || [];
+    setSelectedNumbers(storedSelectedNumbers);
   };
+  
   
 
   const numbers = Array.from({ length: 100 }, (_, index) => index + 1);

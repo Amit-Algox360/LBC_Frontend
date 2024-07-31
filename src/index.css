@@ -513,3 +513,9 @@ display: flex;
 .result-info {
   margin-top: 10px;
 }
+
+@media (min-width: 320px) and (max-width: 425px) {
+  #customeidbysqube td {
+    font-size: 10px;
+}
+}
