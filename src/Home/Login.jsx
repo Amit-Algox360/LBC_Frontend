@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from '../Common/Header';
-import Footer from '../Common/Footer';
+import Header from '../HomeCommon/Header';
+import Footer from '../HomeCommon/Footer';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';

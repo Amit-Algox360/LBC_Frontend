@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import DashboardHeader from './DashboardHeader';
+import DashboardHeader from '../DashboardHeader';
 // import useRazorpay from "react-razorpay";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { API_BASE_URL } from '../Api/data';
-import { API_LIVE_URL } from '../Api/data';
-import { PAYMENT_GATEWAY_LOGO } from '../Api/data';
-import { PAYMENT_GATEWAY_DESCRIPTION } from '../Api/data';
-import { REACT_APP_RAZOR_PAY_API_KEY_TEST } from '../Api/data';
+import { API_BASE_URL } from '../../Api/data';
+import { API_LIVE_URL } from '../../Api/data';
+import { PAYMENT_GATEWAY_LOGO } from '../../Api/data';
+import { PAYMENT_GATEWAY_DESCRIPTION } from '../../Api/data';
+import { REACT_APP_RAZOR_PAY_API_KEY_TEST } from '../../Api/data';
 
 function AddMoney() {
   const [amount, setAmount] = useState(0);

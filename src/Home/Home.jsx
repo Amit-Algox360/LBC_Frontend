@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '../Common/Header';
-import Footer from '../Common/Footer';
+import Header from '../HomeCommon/Header';
+import Footer from '../HomeCommon/Footer';
 
 function Home() {
   const [isLoggedIn] = useState(false);

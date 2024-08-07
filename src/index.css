@@ -509,12 +509,178 @@ display: flex;
   cursor: not-allowed;
 }
 
-.result-info {
+/* .result-info {
   margin-top: 10px;
+} */
+
+/* .spin-wheel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
 }
+
+.wheel-wrapper {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  transform-origin: center;
+  background: conic-gradient(
+    #FF0000 0% 12.5%, 
+    #FF7F00 12.5% 25%, 
+    #FFFF00 25% 37.5%, 
+    #7FFF00 37.5% 50%, 
+    #00FF00 50% 62.5%, 
+    #00FFFF 62.5% 75%, 
+    #0000FF 75% 87.5%, 
+    #7F00FF 87.5% 100%
+  );
+}
+
+.segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  line-height: 150px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #4A90E2;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+} */
+
+
 
 @media (min-width: 320px) and (max-width: 425px) {
   #customeidbysqube td {
     font-size: 10px;
 }
+}
+
+/* src/components/CustomSpinWheel.css */
+.spin-wheel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.wheel-wrapper {
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 5px solid #333;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  transform-origin: center;
+  background: conic-gradient(
+    #93C54B 0% 8.33%, 
+    #AA5241 8.33% 16.67%, 
+    #93C54B 16.67% 25%, 
+    #AA5241 25% 33.33%, 
+    #93C54B 33.33% 41.67%, 
+    #AA5241 41.67% 50%, 
+    #93C54B 50% 58.33%, 
+    #AA5241 58.33% 66.67%, 
+    #93C54B 66.67% 75%, 
+    #AA5241 75% 83.33%, 
+    #93C54B 83.33% 91.67%, 
+    #AA5241 91.67% 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.number.change {
+  padding-top: 248px;
+  font-size: 16px;
+  rotate: 75deg;
+}
+.segment {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.segment-content {
+  transform: rotate(-90deg);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 1.2em;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+button:disabled {
+  background-color: #999;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
 }

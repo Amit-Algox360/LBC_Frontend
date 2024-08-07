@@ -1,5 +1,5 @@
-import Header from "../Common/Header";
-import Footer from "../Common/Footer";
+import Header from "../HomeCommon/Header";
+import Footer from "../HomeCommon/Footer";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";

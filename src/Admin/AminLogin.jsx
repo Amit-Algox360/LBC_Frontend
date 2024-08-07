@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../Common/Header";
+import Header from "../HomeCommon/Header";
 import axios from 'axios'; 
 import { useNavigate } from "react-router-dom";
 const Adminlogin = () => {

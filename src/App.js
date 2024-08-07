@@ -1,22 +1,21 @@
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
-import Home from "./Pages/Home";
+import Login from "./Home/Login";
+import Register from "./Home/Register";
+import Home from "./Home/Home";
 import Main from "./Dashboard/Main";
-import Play from "./Dashboard/Play";
+import Play from "./Dashboard/Games/Play";
 import Activity from "./Dashboard/Activity";
 import {Routes, Route } from "react-router-dom";
 import Upadate from "./Dashboard/Upadate";
 import Cpassword from "./Dashboard/Cpassword";
 import AdminHome from "./Admin";
 import Adminlogin from "./Admin/AminLogin";
-import AddMoney from "./Dashboard/AddMoney";
-import Withdrawl from "./Dashboard/Withdrawl";
+import AddMoney from "./Dashboard/Money/AddMoney";
+import Withdrawl from "./Dashboard/Money/Withdrawl";
 import Data from "./Admin/data";
-import Car from "./prac";
 import Createticket from "./Admin/createticket";
 import Timer from "./Dashboard/Timer";
 import Result from "./Dashboard/Result/Result";
-import Spin from "./Dashboard/spingame/spin";
+import Spin from "./Dashboard/Games/Spin";
 function App() {
   return (
  
@@ -34,12 +33,10 @@ function App() {
       <Route path="addMoney" element={<AddMoney />}/>
       <Route path="withdrawl" element={<Withdrawl />}/>
       <Route path="data" element={<Data />}/>
-      <Route path="car" element={<Car />}/>
       <Route path="createticket" element={<Createticket />}/>
       <Route path="timer" element={<Timer />}/>
       <Route path="/result" element={<Result />}/>
       <Route path="/spin" element={<Spin />}/>
-
     </Routes>
 
   );

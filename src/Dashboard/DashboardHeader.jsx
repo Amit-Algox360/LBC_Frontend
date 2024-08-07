@@ -29,6 +29,9 @@ export default function DashboardHeader() {
                                     <Link className="nav-link active" aria-current="page" to="/play">Play</Link>
                                 </li>
                                 <li className="nav-item">
+                                    <Link className="nav-link active" aria-current="page" to="/spin">Spin</Link>
+                                </li>
+                                <li className="nav-item">
                                     <Link className="nav-link active" aria-current="page" to="/result">Result</Link>
                                 </li>
                                 <li className="nav-item">

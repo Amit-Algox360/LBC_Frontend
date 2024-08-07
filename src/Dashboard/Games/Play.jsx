@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import DashboardHeader from "./DashboardHeader";
+import DashboardHeader from "../DashboardHeader";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { API_LIVE_URL } from "../Api/data";
-import { API_BASE_URL } from "../Api/data";
+import { API_LIVE_URL } from "../../Api/data";
+import { API_BASE_URL } from "../../Api/data";
 import "react-toastify/dist/ReactToastify.css";
 
 const Play = () => {

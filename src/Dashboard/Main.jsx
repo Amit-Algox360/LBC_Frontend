@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import DashboardHeader from './DashboardHeader';
+import { API_BASE_URL } from '../Api/data';
+import { API_LIVE_URL } from '../Api/data';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 export default function Main() {
+    const [data,setData]= useState('')
+    useEffect(() => {
+        const fetchData = async () => {
+          const token = localStorage.getItem('token');
+          const userId = localStorage.getItem('userId');
+          try {
+            const headers = {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            };
+            const response = await axios.get(`${API_LIVE_URL}user/read?userId=${userId}`, { headers });
+            setData(response.data.response);
+            console.log('User Data:', response.data.response);
+          } catch (e) {
+            console.log(e);
+          }
+        };
+        fetchData();
+      }, []);
     return (
         <>
   <DashboardHeader/>
      {/* Banner Section Start */}
      <div className="header-inner two" style={{ marginBottom: "20px" }}>
                 <div className="inner text-center">
-                    <h4 className="title text-white uppercase"> Welcome Back Abc</h4>
+                    <h4 className="title text-white uppercase"> Welcome Back {data.firstName} {data.lastName}</h4>
                 </div>
                 <div className="overlay bg-opacity-5"></div>
                 <img src="https://img.hotimg.com/bannerf16f185409960eb1.jpeg" alt="" className="img-responsive" />
@@ -24,14 +46,14 @@ export default function Main() {
                                 <h5>Your Current Balance</h5>
                                 <div className=" sh-divider-line solid light margin"></div>
                                 <br />
-                                <h3> 80 USD</h3>
+                                <h3>Rs. {data.amount}</h3>
                             </div>
 
 
                             <div className='balance'>
                                 <ul className='category-links'>
                                     <li>
-                                        <Link to='activity'> Activity</Link>
+                                        <Link to='/activity'> Activity</Link>
                                     </li>
                                     <li>
                                         <Link to='#'> Send Money</Link>
@@ -40,10 +62,10 @@ export default function Main() {
                                         <Link to='#'> Request Money</Link>
                                     </li>
                                     <li>
-                                        <Link to='addMoney'> Add Money</Link>
+                                        <Link to='/addMoney'> Add Money</Link>
                                     </li>
                                     <li>
-                                        <Link to='withdrawl'> Withdraw Money</Link>
+                                        <Link to='/withdrawl'> Withdraw Money</Link>
                                     </li>
                                 </ul>
                             </div>

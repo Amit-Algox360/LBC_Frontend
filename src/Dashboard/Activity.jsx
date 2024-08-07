@@ -17,7 +17,7 @@ export default function Activity() {
 
             <div className='container'>
                 <div className='row'>
-                    <div className='col-md-4 col-sm-12'>   v 
+                    <div className='col-md-4 col-sm-12'>    
                         <form>
                             <div className='row'>
                                 <div className='col-sm-12'>

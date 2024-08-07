@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Buffer } from 'buffer';
-import DashboardHeader from './DashboardHeader';
+import DashboardHeader from '../DashboardHeader';
 
 const REACT_APP_RAZOR_PAY_API_KEY_TEST = process.env.REACT_APP_RAZOR_PAY_API_KEY_TEST;
 const REACT_APP_RAZOR_PAY_API_KEY_SECRET = process.env.REACT_APP_RAZOR_PAY_API_KEY_SECRET;
