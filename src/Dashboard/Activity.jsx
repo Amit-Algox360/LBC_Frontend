@@ -21,7 +21,7 @@ export default function Activity() {
         const userId = localStorage.getItem('userId');
         const formattedStartDate = formatDate(startDate);
         const formattedEndDate = formatDate(endDate);
-        const apiUrl = `http://localhost:8000/api/payment/readTransaction?page=1&startDate=${formattedStartDate}&endDate=${formattedEndDate}&userId=${userId}`;
+        const apiUrl = `${API_LIVE_URL}payment/readTransaction?page=1&startDate=${formattedStartDate}&endDate=${formattedEndDate}&userId=${userId}`;
 
         try {
             const headers = {
@@ -29,7 +29,7 @@ export default function Activity() {
                 Authorization: `Bearer ${token}`,
               };
             const response = await axios.get(apiUrl,{headers});
-            setTransactions(response.data.response || []); // Ensure transactions is always an array
+            setTransactions(response.data.response || []); 
         } catch (error) {
             console.error('Error fetching transactions by date:', error);
         }
