@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../HomeCommon/Header";
 import axios from 'axios'; 
+import { API_BASE_URL } from "../Api/data";
+import { API_LIVE_URL } from "../Api/data";
 import { useNavigate } from "react-router-dom";
 const Adminlogin = () => {
   const navigate = useNavigate()
@@ -12,7 +14,7 @@ const Adminlogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
    try{
-    const response = await axios.post('http://localhost:8000/api/auth/login',{
+    const response = await axios.post(`${API_LIVE_URL}auth/login`,{
       email : email,
       password : password
     })
