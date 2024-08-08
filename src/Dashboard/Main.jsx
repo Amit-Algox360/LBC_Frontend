@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 export default function Main() {
     const [data,setData]= useState('')
+    const [transaction,setTransaction]=useState('')
+    // User Data Get
     useEffect(() => {
         const fetchData = async () => {
           const token = localStorage.getItem('token');
@@ -17,13 +19,30 @@ export default function Main() {
             };
             const response = await axios.get(`${API_LIVE_URL}user/read?userId=${userId}`, { headers });
             setData(response.data.response);
-            console.log('User Data:', response.data.response);
           } catch (e) {
             console.log(e);
           }
         };
         fetchData();
       }, []);
+
+    //   Get all transction
+    useEffect(()=>{
+         const fetchTranction = async () =>{
+            const token = localStorage.getItem('token');
+            try{
+                const headers = {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  };
+                  const response = await axios.get(`${API_LIVE_URL}payment/readTransaction?page=1`,{headers})
+                  setTransaction(response.data.response)
+            }catch(e){
+                console.log(e)
+            }
+         }
+         fetchTranction();
+    },[])
     return (
         <>
   <DashboardHeader/>
@@ -72,22 +91,37 @@ export default function Main() {
                         </div>
                         <div className='col-md-8 col-sm-12'>
                             <table className="table">
-                                <tbody>
+                            <tbody>
+                                {transaction.length > 0 ? (
+                                    transaction.map((transactions, index) => (
+                                        <tr key={index}>
+                                            <th scope="row" style={{ color: "#727272", fontSize: "18px", textTransform: "uppercase", fontWeight: "300" }}>
+                                                {new Date(transactions.createdAt).toISOString().split('T')[0]}
+                                            </th>
+                                            <td style={{ color: "#727272", fontSize: "14px", fontWeight: "300" }}>
+                                             <b> {transactions.paymentType} by Razorpay</b>   
+                                            </td>
+                                            <td style={{ textAlign: "right", color: "#727272", fontSize: "20px" }}>
+                                                <b> Rs.{transactions.amount.toFixed(2)}</b>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
                                     <tr>
-                                        <th scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
-                                        <br/>Sep</th>
-                                        <td style={{ color: "#727272" ,fontSize: "14px" , fontWeight:"300"}}>	Withdraw By PayPal</td>
-                                        <td style={{textAlign:"right", color: "#727272" ,fontSize: "20px"}}><b> $ 200.00</b> </td>
+                                        <td colSpan="3" style={{ textAlign: "center", color: "#727272", fontSize: "14px", fontWeight: "300" }}>
+                                            No transactions found
+                                        </td>
                                     </tr>
-                                </tbody>
-                                <tbody>
+                                )}
+                            </tbody>
+                                {/* <tbody>
                                     <tr>
                                     <th scope="row" style={{ color: "#727272" ,fontSize: "18px" ,textTransform: "uppercase", fontWeight:"300"}}>13
                                         <br/>Sep</th>
                                         <td style={{ color: "#727272" ,fontSize: "14px" , fontWeight:"300"}}>	Withdraw By PayPal</td>
                                         <td style={{textAlign:"right", color: "#727272" ,fontSize: "20px"}}><b> $ 200.00</b> </td>
                                     </tr>
-                                </tbody>
+                                </tbody> */}
                             </table>
                         </div>
                     </div>

@@ -64,7 +64,7 @@ const CustomSpinWheel = () => {
       };
 
       await axios.get(
-        `http://localhost:8000/api/spinner/spin?amount=${amountToDeduct}`,
+        `${API_LIVE_URL}spinner/spin?amount=${amountToDeduct}`,
         { headers }
       );
 
@@ -89,7 +89,7 @@ const CustomSpinWheel = () => {
           const winAmount = parseInt(segmentResult.replace('Rs.', ''));
           try {
             await axios.get(
-              `http://localhost:8000/api/spinner/win?winamount=${winAmount}`,
+              `${API_LIVE_URL}spinner/win?winamount=${winAmount}`,
               { headers }
             );
             setData((prevData) => ({ ...prevData, amount: prevData.amount + winAmount }));
