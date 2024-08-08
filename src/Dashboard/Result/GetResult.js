@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { API_BASE_URL } from '../../Api/data';
+import { API_LIVE_URL } from '../../Api/data';
 const getMonthName = (monthNumber) => {
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return monthNames[monthNumber];
@@ -20,7 +21,7 @@ const GetResult = ({ selectedDate }) => {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          `http://localhost:8000/api/user/resultFetch/?month=${month}&date=${date}`,
+          `${API_LIVE_URL}user/resultFetch/?month=${month}&date=${date}`,
           { headers }
         );
         console.log("Fetched Result Data:", response.data.response);

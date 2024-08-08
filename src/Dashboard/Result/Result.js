@@ -3,6 +3,8 @@ import DashboardHeader from "../DashboardHeader";
 import axios from "axios";
 import GetResult from "./GetResult";
 import DatePicker from "react-datepicker";
+import { API_BASE_URL } from "../../Api/data";
+import { API_LIVE_URL } from "../../Api/data";
 import "react-datepicker/dist/react-datepicker.css";
 
 function getDate() {
@@ -43,7 +45,7 @@ const Result = () => {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          "http://localhost:8000/api/ticket/read",
+          `${API_LIVE_URL}ticket/read`,
           { headers }
         );
         console.log("Fetched Ticket Data:", response.data.response);
@@ -72,7 +74,7 @@ const Result = () => {
       const startHour = hours[hourIndex];
       const endHour = hours[(hourIndex + 1) % 24];
       const response = await axios.post(
-        'http://localhost:8000/api/user/result',
+        `${API_LIVE_URL}user/result`,
         { ticketCategoryId, slotTime: `${startHour}-${endHour}`, month, date },
         { headers }
       );
