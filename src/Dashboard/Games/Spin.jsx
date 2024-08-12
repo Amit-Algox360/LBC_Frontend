@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../DashboardHeader';
 import { API_LIVE_URL } from '../../Api/data';
 import axios from 'axios';
-
+import {toast} from 'react-toastify'
 const CustomSpinWheel = () => {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
@@ -19,7 +19,7 @@ const CustomSpinWheel = () => {
         };
         const response = await axios.get(`${API_LIVE_URL}user/read?userId=${userId}`, { headers });
         setData(response.data.response);
-        console.log('User Data:', response.data.response);
+        // console.log('User Data:', response.data.response);
       } catch (e) {
         console.log(e);
       }
@@ -48,7 +48,7 @@ const CustomSpinWheel = () => {
     const amountToDeduct = 100; 
 
     if (data.amount < amountToDeduct) {
-      alert('Insufficient balance');
+      toast.error('Insufficient balance');
       return;
     }
 
