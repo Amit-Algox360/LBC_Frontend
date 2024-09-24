@@ -12,14 +12,7 @@ const Header = () => {
             <img src="https://img.hotimg.com/logo-181c65d1a63a3cafe.png " width="180" alt="" />
           </a>
           <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
-            <i className="ti ti-x fs-8"></i>nh bm,<div className="
-            
-            
-              
-              
-              
-               
-                "></div>
+            <i className="ti ti-x fs-8"></i><div className=""></div>
           </div>
         </div>
         {/* <!-- Sidebar navigation--> */}

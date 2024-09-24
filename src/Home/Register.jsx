@@ -67,7 +67,7 @@ function Register() {
           toast.error("Registration failed");
         }
       } catch (error) {
-        toast.error("Error during registration");
+        console.log(e)
       }
     } else {
       toast.error("Form is invalid. Please check the errors.");

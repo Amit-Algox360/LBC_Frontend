@@ -50,7 +50,20 @@
   </body>
   <div style="display: none;" id="chart"></div>
   <div style="display: none;" id="breakup"></div>
-  <div style="display: none;" id="earning"></div>              
+  <div style="display: none;" id="earning"></div>  
+  <script>
+        const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
+
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    sidebarClose.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+    });
+  </script>            
   <script src="./libs/jquery/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./js/sidebarmenu.js"></script>

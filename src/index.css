@@ -690,3 +690,14 @@ button:disabled {
   font-weight: bold;
   color: #333;
 }
+
+
+
+
+/* Media query for admin panel */
+
+@media only screen and (max-width: 1199px) {
+  .container-lg {
+    max-width: 100% !important;
+  }
+}

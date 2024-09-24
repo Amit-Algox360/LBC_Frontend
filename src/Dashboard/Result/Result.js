@@ -133,6 +133,7 @@ const Result = () => {
               onChange={(date) => setSelectedDate(date)}
               className="form-control"
               dateFormat="dd/MM/yyyy"
+              maxDate={new Date()} 
             />
           </div>
         </div>
