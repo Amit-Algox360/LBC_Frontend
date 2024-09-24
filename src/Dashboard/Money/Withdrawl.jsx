@@ -44,6 +44,7 @@ function Withdrawl() {
                 }
             }, {
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Basic ${auth}`
                 }
             });
@@ -65,6 +66,7 @@ function Withdrawl() {
                 notes: { message }
             }, {
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Basic ${auth}`
                 }
             });
@@ -120,7 +122,7 @@ function Withdrawl() {
                                     placeholder="PayPal Email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    required
+                                    
                                 />
                                 <br />
                                 <textarea

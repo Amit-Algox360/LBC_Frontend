@@ -124,8 +124,8 @@ function Register() {
   };
 
   // Country Api
-  const [ setCountries] = useState([]);
-  const [ setSelectedCountry] = useState({});
+  // const [ setCountries] = useState([]);
+  // const [ setSelectedCountry] = useState({});
 
   // useEffect(() => {
   //   fetch(
@@ -138,21 +138,21 @@ function Register() {
   //     });
   // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
-        );
-        const data = response.data;
-        setCountries(data.countries);
-        setSelectedCountry(data.userSelectValue);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
+  //       );
+  //       const data = response.data;
+  //       setCountries(data.countries);
+  //       setSelectedCountry(data.userSelectValue);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
   return (
     <>
       <Header />

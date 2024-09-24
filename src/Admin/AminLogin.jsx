@@ -5,6 +5,8 @@ import axios from 'axios';
 import { API_BASE_URL } from "../Api/data";
 import { API_LIVE_URL } from "../Api/data";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Adminlogin = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState("");
@@ -19,18 +21,15 @@ const Adminlogin = () => {
       password : password
     })
     if (response.data.status === 401){
-      console.log(response.data.message);
       setError(response.data.message)
     } else if(response.data.status === 201){
-      console.log("Suceesfull Login");
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('isAdmin', response.data.isAdmin);
-      alert('Sucessfull Login')
+      toast.success('Sucessfull Login')
       navigate('/admin')
     }
    }catch(error){
-    console.log("Login Failed");
-    alert('Login Failed')
+    toast.error('Login Failed')
    }
  
   };

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Header from '../HomeCommon/Header';
 import Footer from '../HomeCommon/Footer';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Home() {
   const [isLoggedIn] = useState(false);
@@ -14,7 +16,7 @@ function Home() {
   }
   const handleNumberSelect = (number) => {
     if (!isLoggedIn) {
-      alert("User Not Loged in Please Login First...");
+      toast.error("User Not Loged in Please Login First...");
     } else {
       setSelectedNumber(number);
     }
