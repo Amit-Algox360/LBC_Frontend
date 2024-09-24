@@ -13,31 +13,16 @@ const Play = () => {
     return `${formattedHour}${period}`;
   };
 
+  const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
+  const currentHourIndex = new Date().getHours();
+
   const isDisabled = (index) => {
     const now = new Date();
-    const slotStartHour = hours[index];
-    const slotEndHour = hours[(index + 1) % 24];
-  
-    const parseTime = (timeStr) => {
-      const [hour, period] = timeStr.match(/(\d+)(AM|PM)/).slice(1);
-      const date = new Date();
-      let hour24 = parseInt(hour, 10);
-      if (period === "PM" && hour !== "12") hour24 += 12;
-      if (period === "AM" && hour === "12") hour24 = 0;
-      return new Date(date.setHours(hour24, 0, 0, 0));
-    };
-  
-    const slotStartTime = parseTime(slotStartHour);
-    const slotEndTime = parseTime(slotEndHour);
-  
-    if (slotStartTime > slotEndTime) {
-      return now >= slotStartTime || now < slotEndTime;
-    }
-  
-    return now >= slotStartTime &&  slotEndTime;
+    const slotStartHour = index; 
+    return slotStartHour < currentHourIndex; 
   };
 
-  const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
+  // const hours = Array.from({ length: 24 }, (_, index) => formatHour(index));
   const userId = localStorage.getItem("userId");
 
   const [ticket, setTicket] = useState({});
@@ -333,9 +318,9 @@ const Play = () => {
     }
   };
   const handleSlotTimeClick = (index) => {
-    if (isDisabled(index)) {
+    if (isDisabled(index)) 
       return;
-    }
+    
     localStorage.setItem(`selectedNumbers_${selectedHourIndex}`, JSON.stringify(selectedNumbers));
     setSelectedHourIndex(index);
     const storedNumbers = localStorage.getItem(`selectedNumbers_${index}`);

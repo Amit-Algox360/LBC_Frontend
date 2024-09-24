@@ -110,6 +110,10 @@ const Result = () => {
   
     const slotStartTime = parseTime(slotStartHour);
     const slotEndTime = parseTime(slotEndHour);
+
+    if (hourIndex === currentHour) {
+      return false;
+    }
   
     if (slotStartTime > slotEndTime) {
       return now >= slotStartTime || now < slotEndTime;
